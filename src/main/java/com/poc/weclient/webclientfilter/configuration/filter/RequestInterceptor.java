@@ -29,6 +29,8 @@ public class RequestInterceptor implements ExchangeFilterFunction {
 
     private static final int DEFAULT_BUFFER_SIZE = 256 * 256;
 
+    /*intercepts outgoing HTTP requests in a Spring WebFlux application,
+     modifies the body by deserializing to a Custom object*/
     @Override
     public Mono<ClientResponse> filter(ClientRequest request, ExchangeFunction next) {
         BodyInserter<?, ? super ClientHttpRequest> inserter = request.body();
@@ -44,7 +46,6 @@ public class RequestInterceptor implements ExchangeFilterFunction {
                                 String data = new String(bytes, StandardCharsets.UTF_8);
                                 log.info("data= || " + data);
                                 /* performing an operation */
-
                                 var transaction = new Gson().fromJson(data, Transaction.class);
                                 if (transaction != null) {
                                     transaction.setItemAmount(transaction.getItemAmount() * 2 / 5);
